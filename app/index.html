@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Korea in Numbers — Republic of Korea Statistics, 2020–2026</title>
+<meta name="description" content="A terminal-style explorer of the Republic of Korea's official statistics: GDP, prices, labour, demographics and trade, from the Ministry of Data and Statistics, the Bank of Korea and the Ministry of Trade, Industry and Resources.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">[▮]</span>
+    <span class="brand-name">KOREA IN NUMBERS</span>
+    <span class="brand-sub">// 대한민국 통계 탐색기</span>
+    <span class="badge live">● LIVE DATA · NOV 2026</span>
+  </div>
+  <div class="topbar-right">
+    <span class="dim">SRC: MODS · BOK · MOTIR</span>
+    <button class="btn" id="btn-lang" type="button">[LANG: EN]</button>
+  </div>
+</header>
+
+<section class="banner" aria-label="Headline">
+  <p class="banner-kicker" id="banner-kicker">19 NOV 2026 · FIRST TIME EVER</p>
+  <h1 id="banner-head">Korea’s cumulative exports passed $1 trillion.</h1>
+  <p id="banner-sub">October 2026 alone set a record: $115.28B exported, up 93.7% on a year earlier, led by semiconductors at $56.4B in the month. Jan–Oct exports: $930.0B. Trade surplus Jan–Oct: $294.9B.</p>
+  <p class="dim" id="banner-source">Source: MOTIR, 1 Nov 2026</p>
+</section>
+
+<p class="quick-facts" id="quick-facts">Nominal GDP 2025 ≈ $1,936.6B · GDP per capita 2025 $37,470 (BOK) · Core CPI Oct 2026 +2.8% (MODS)</p>
+
+<nav class="nav" aria-label="Statistical domains">
+  <div class="tabs" id="domain-tabs">
+    <button class="tab-btn active" data-domain="all" type="button">[1] ALL SECTORS</button>
+    <button class="tab-btn" data-domain="macro" type="button">[2] MACRO / GDP</button>
+    <button class="tab-btn" data-domain="prices" type="button">[3] PRICES / CPI</button>
+    <button class="tab-btn" data-domain="labour" type="button">[4] LABOUR</button>
+    <button class="tab-btn" data-domain="demo" type="button">[5] DEMOGRAPHICS</button>
+    <button class="tab-btn" data-domain="trade" type="button">[6] TRADE</button>
+  </div>
+  <div class="controls">
+    <label class="dim" for="year-range">RANGE:</label>
+    <select id="year-range" class="select" aria-label="Time range">
+      <option value="all" selected>2020 – 2026 (FULL)</option>
+      <option value="recent">2023 – 2026 (RECENT)</option>
+      <option value="post24">2024 – 2026 (LATEST)</option>
+    </select>
+    <input type="text" id="search-box" class="input" placeholder="/ filter series…" aria-label="Filter series">
+    <button class="btn" id="btn-export" type="button">[EXPORT .CSV]</button>
+  </div>
+</nav>
+
+<main class="page">
+
+  <section class="kpi-strip" id="kpi-strip" aria-label="Headline indicators"></section>
+
+  <section class="inspector" id="inspector" aria-live="polite">
+    <div class="inspector-head">
+      <strong id="insp-title">SERIES INSPECTOR</strong>
+      <button class="btn" id="btn-close-insp" type="button">[X] CLOSE</button>
+    </div>
+    <div id="insp-body" class="inspector-body"></div>
+  </section>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title" id="chart-heading">TIME-SERIES</span>
+        <div class="controls">
+          <select id="chart-series" class="select" aria-label="Chart indicator"></select>
+          <button class="btn" id="btn-chart-mode" type="button">[MODE: LINE]</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="chart-box" class="chart-box"></div>
+        <p class="readout" id="chart-readout"></p>
+        <p class="dim hint" id="chart-hint">Hover or tap a point for the exact reading.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title" id="snapshot-heading">STRUCTURAL SNAPSHOT</span>
+        <select id="snapshot-select" class="select" aria-label="Snapshot view">
+          <option value="prices" selected>PRICES · OCT 2026 YoY</option>
+          <option value="labour">LABOUR · OCT 2026</option>
+          <option value="vital">BIRTHS &amp; PEOPLE · 2025–26</option>
+        </select>
+      </div>
+      <div class="panel-body" id="snapshot-body"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title" id="registry-heading">OFFICIAL STATISTICAL REGISTRY — Click a column to sort · click a row for method &amp; source</span>
+      <span class="dim" id="row-count">SHOWING 10 SERIES</span>
+    </div>
+    <div class="table-wrap">
+      <table class="registry" id="registry-table">
+        <thead>
+          <tr>
+            <th data-sort="code">CODE ↕</th>
+            <th data-sort="domain">SECTOR ↕</th>
+            <th data-sort="name">INDICATOR ↕</th>
+            <th data-sort="unit">UNIT ↕</th>
+            <th class="num" data-sort="y2021">2021 ↕</th>
+            <th class="num" data-sort="y2022">2022 ↕</th>
+            <th class="num" data-sort="y2023">2023 ↕</th>
+            <th class="num" data-sort="y2024">2024 ↕</th>
+            <th class="num" data-sort="y2025">2025 ↕</th>
+            <th class="num" data-sort="y2026">2026* ↕</th>
+            <th>SOURCE</th>
+          </tr>
+        </thead>
+        <tbody id="registry-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title">PRIMARY OFFICIAL SOURCES &amp; RELEASE NOTES</span>
+      <span class="badge">VERIFIED NOV 2026</span>
+    </div>
+    <div class="panel-body sources-grid" id="sources-grid"></div>
+    <p class="panel-body dim note">Every figure on this page names its source and its year in the registry. The 2026 column mixes the latest release per series — a Q3 growth rate, an October price level, a January–October trade total — and each row’s inspector says which. Nothing here is fetched at run time: all figures ship in the site’s own files.</p>
+  </section>
+
+</main>
+
+<footer class="statusbar">
+  <span id="footer-keys">KEYS: 1–6 switch sector · / search · ESC close</span>
+  <span id="footer-note">* 2026 points use the latest release — see each row for its basis. Static single file set, no network.</span>
+</footer>
+
+</body>
+</html>
