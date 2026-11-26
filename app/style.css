@@ -10,7 +10,7 @@
   --line-bright: #3b4f6b;
   --ink: #d8e2ee;
   --dim: #7f92ab;
-  --muted: #4c5e75;
+  --muted: #6b7f98;
   --green: #34d399;
   --cyan: #38bdf8;
   --amber: #fbbf24;
@@ -99,7 +99,7 @@ a:hover { text-decoration: underline; }
   margin: 8px 14px 0;
   padding: 7px 10px;
   border: 1px dashed var(--line-bright);
-  color: var(--dim);
+  color: var(--ink);
   font-size: 12px;
 }
 
@@ -246,6 +246,8 @@ a:hover { text-decoration: underline; }
 .registry th:hover { color: var(--ink); }
 .registry tbody tr { cursor: pointer; }
 .registry tbody tr:hover td { background: rgba(56, 189, 248, 0.07); }
+.registry .empty-row td { color: var(--dim); cursor: default; text-align: center; padding: 14px 8px; }
+.registry .empty-row:hover td { background: none; }
 .registry .num { text-align: right; font-variant-numeric: tabular-nums; }
 .registry .num.hot { color: var(--green); font-weight: 700; }
 .registry .code { color: var(--cyan); font-weight: 700; }

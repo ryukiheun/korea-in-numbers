@@ -15,7 +15,7 @@
     <span class="brand-mark">[▮]</span>
     <span class="brand-name">KOREA IN NUMBERS</span>
     <span class="brand-sub">// 대한민국 통계 탐색기</span>
-    <span class="badge live">● LIVE DATA · NOV 2026</span>
+    <span class="badge live">● LATEST DATA · NOV 2026</span>
   </div>
   <div class="topbar-right">
     <span class="dim">SRC: MODS · BOK · MOTIR</span>
@@ -26,11 +26,11 @@
 <section class="banner" aria-label="Headline">
   <p class="banner-kicker" id="banner-kicker">19 NOV 2026 · FIRST TIME EVER</p>
   <h1 id="banner-head">Korea’s cumulative exports passed $1 trillion.</h1>
-  <p id="banner-sub">October 2026 alone set a record: $115.28B exported, up 93.7% on a year earlier, led by semiconductors at $56.4B in the month. Jan–Oct exports: $930.0B. Trade surplus Jan–Oct: $294.9B.</p>
-  <p class="dim" id="banner-source">Source: MOTIR, 1 Nov 2026</p>
+  <p id="banner-sub">Cumulative exports, 1 Jan–19 Nov 2026, passed $1 trillion for the first time — up from $930.0B at the end of October. October alone set a record: $115.28B exported, up 93.7% on a year earlier, led by semiconductors at $56.4B in the month. Trade surplus Jan–Oct: $294.9B.</p>
+  <p class="dim" id="banner-source">Source: MOTIR, 19 Nov 2026</p>
 </section>
 
-<p class="quick-facts" id="quick-facts">Nominal GDP 2025 ≈ $1,936.6B · GDP per capita 2025 $37,470 (BOK) · Core CPI Oct 2026 +2.8% (MODS)</p>
+<p class="quick-facts" id="quick-facts">Exports Jan–Oct 2026 $930.0B · Trade surplus Jan–Oct +$294.9B (MOTIR) · Core CPI Oct 2026 +2.8% (MODS)</p>
 
 <nav class="nav" aria-label="Statistical domains">
   <div class="tabs" id="domain-tabs">
@@ -42,7 +42,7 @@
     <button class="tab-btn" data-domain="trade" type="button">[6] TRADE</button>
   </div>
   <div class="controls">
-    <label class="dim" for="year-range">RANGE:</label>
+    <label class="dim" for="year-range" id="range-label">CHART RANGE:</label>
     <select id="year-range" class="select" aria-label="Time range">
       <option value="all" selected>2020 – 2026 (FULL)</option>
       <option value="recent">2023 – 2026 (RECENT)</option>
@@ -77,6 +77,7 @@
       <div class="panel-body">
         <div id="chart-box" class="chart-box"></div>
         <p class="readout" id="chart-readout"></p>
+        <p class="dim hint" id="chart-legend">* 2026: latest release per series (Q3 / Oct / Jan–Oct), not a full year. In bar mode the 2026 bar is amber.</p>
         <p class="dim hint" id="chart-hint">Hover or tap a point for the exact reading.</p>
       </div>
     </section>
@@ -123,11 +124,12 @@
 
   <section class="panel">
     <div class="panel-head">
-      <span class="panel-title">PRIMARY OFFICIAL SOURCES &amp; RELEASE NOTES</span>
+      <span class="panel-title" id="sources-heading">PRIMARY OFFICIAL SOURCES &amp; RELEASE NOTES</span>
       <span class="badge">VERIFIED NOV 2026</span>
     </div>
     <div class="panel-body sources-grid" id="sources-grid"></div>
-    <p class="panel-body dim note">Every figure on this page names its source and its year in the registry. The 2026 column mixes the latest release per series — a Q3 growth rate, an October price level, a January–October trade total — and each row’s inspector says which. Nothing here is fetched at run time: all figures ship in the site’s own files.</p>
+    <p class="panel-body dim note" id="sources-note">Every figure on this page names its source and its year in the registry. The 2026 column mixes the latest release per series — a Q3 growth rate, an October price level, a January–October trade total — and each row’s inspector says which. Nothing here is fetched at run time: all figures ship in the site’s own files.</p>
+    <p class="panel-body dim note" id="glossary">SA = seasonally adjusted · NSA = not seasonally adjusted · YoY = year on year · QoQ = quarter on quarter · FOB = free on board · CIF = cost, insurance and freight · MODS = Ministry of Data and Statistics · BOK = Bank of Korea · MOTIR = Ministry of Trade, Industry and Resources.</p>
   </section>
 
 </main>

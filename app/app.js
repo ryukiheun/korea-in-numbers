@@ -3,7 +3,7 @@
 // Data lives in data.js, drawing lives in charts.js; this file only
 // connects them to the page.
 
-import { SERIES, HEADLINE_KPIS, SNAPSHOTS, DOMAINS, SOURCES, UI_TEXT } from './data.js';
+import { SERIES, HEADLINE_KPIS, SNAPSHOTS, DOMAINS, SOURCES, GLOSSARY, UI_TEXT } from './data.js';
 import { yearsForRange, formatValue, renderChartSVG } from './charts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -36,13 +36,29 @@ function snapshotLabel(row) {
   return state.lang === 'en' ? row.labelEn : row.labelKo;
 }
 
+// The mark on a 2026 value ("est.", "proj.", "Oct") in the page
+// language, or '' when the series has none.
+function markFor(series) {
+  if (!series.mark2026) return '';
+  return state.lang === 'en' ? series.mark2026.en : series.mark2026.ko;
+}
+
+// A table cell / readout value: "0.82 est.", "51,609 proj.",
+// "120.73 Oct" — never a bare partial-year number.
+function displayValue(series, year) {
+  const v = series.values[year];
+  if (v === null || v === undefined) return '—';
+  const base = formatValue(v);
+  return year === '2026' && markFor(series) ? `${base} ${markFor(series)}` : base;
+}
+
 // ---- headline KPI cards -------------------------------------------------
 
 function renderKpis() {
   $('kpi-strip').innerHTML = HEADLINE_KPIS.map((k) => {
     const picked = state.seriesId === k.id ? ' picked' : '';
     return `<button class="kpi${picked}" data-id="${k.id}" type="button">`
-      + `<span class="kpi-label">${labelOf(k)} <span class="kpi-plot">[PLOT]</span></span>`
+      + `<span class="kpi-label">${labelOf(k)} <span class="kpi-plot">${t().plotHint}</span></span>`
       + `<span class="kpi-value">${k.value}</span>`
       + `<span class="kpi-note">${state.lang === 'en' ? k.noteEn : k.noteKo}</span>`
       + '</button>';
@@ -63,7 +79,8 @@ function renderKpis() {
 function chartReadoutDefault(series) {
   const years = yearsForRange(state.range);
   const last = [...years].reverse().find((y) => series.values[y] !== null && series.values[y] !== undefined);
-  return `<span>LATEST (${last}): <strong>${formatValue(series.values[last])} ${series.unit}</strong> — ${series.basis2026}</span>`
+  const basis = state.lang === 'en' ? series.basis2026 : series.basis2026Ko;
+  return `<span>LATEST (${last}): <strong>${displayValue(series, last)} ${series.unit}</strong> — ${basis}</span>`
     + `<span class="dim">SRC: ${series.source}</span>`;
 }
 
@@ -76,9 +93,9 @@ function renderChart() {
     const delta = point.delta === null
       ? ''
       : ` (Δ ${(point.delta >= 0 ? '+' : '')}${point.delta.toFixed(2)})`;
-    $('chart-readout').innerHTML = `<span>OBS [${point.year}]: <strong>${formatValue(point.value)} ${series.unit}</strong>${delta}</span>`
+    $('chart-readout').innerHTML = `<span>OBS [${point.year}]: <strong>${displayValue(series, point.year)} ${series.unit}</strong>${delta}</span>`
       + `<span class="accent">${seriesName(series)}</span>`;
-  });
+  }, markFor(series));
 }
 
 function fillSeriesSelect() {
@@ -92,17 +109,27 @@ function fillSeriesSelect() {
 function renderSnapshot() {
   const view = SNAPSHOTS[state.snapshot];
   const blocks = 26;
-  $('snapshot-heading').textContent = `${t().snapshotTitle} // ${state.lang === 'en' ? view.titleEn : view.titleKo}`;
+  const scale = state.lang === 'en' ? view.scaleEn : view.scaleKo;
+  $('snapshot-heading').textContent = `${t().snapshotTitle} // ${state.lang === 'en' ? view.titleEn : view.titleKo} · ${scale}`;
   $('snapshot-body').innerHTML = view.rows.map((row) => {
-    const ratio = Math.max(0, Math.min(1, row.value / row.max));
-    const filled = Math.round(ratio * blocks);
-    const bar = `<span class="bar-fill">${'█'.repeat(filled)}</span>${'░'.repeat(blocks - filled)}`;
     const shown = row.unit === 'k' ? `${row.value.toFixed(1)}k`
       : row.unit === 'M' ? `${row.value.toFixed(2)}M`
       : `${row.value}`;
+    const valueText = `${shown}${row.unit === '%' ? '%' : ''}`;
+    // The vital view mixes units, so it lists values with no bars.
+    if (view.bars === false) {
+      return `<div class="snap-row"><div class="snap-top"><span>${snapshotLabel(row)}</span>`
+        + `<strong class="amber">${valueText}</strong></div></div>`;
+    }
+    const ratio = Math.max(0, Math.min(1, row.value / row.max));
+    const filled = Math.round(ratio * blocks);
+    const bar = `<span class="bar-fill">${'█'.repeat(filled)}</span>${'░'.repeat(blocks - filled)}`;
+    // Bar length only: no second % after the bar. The number after
+    // a bar used to be value ÷ row-max, which read as a second
+    // statistic (CPI 2.8% next to "19%").
     return `<div class="snap-row"><div class="snap-top"><span>${snapshotLabel(row)}</span>`
-      + `<strong class="amber">${shown}${row.unit === '%' ? '%' : ''}</strong></div>`
-      + `<div class="snap-bar">[${bar}] ${Math.round(ratio * 100)}%</div></div>`;
+      + `<strong class="amber">${valueText}</strong></div>`
+      + `<div class="snap-bar">[${bar}]</div></div>`;
   }).join('') + `<p class="snap-foot">${state.lang === 'en' ? view.footEn : view.footKo}</p>`;
 }
 
@@ -139,8 +166,10 @@ function sortedSeries(rows) {
       va = a[col];
       vb = b[col];
     }
-    if (va === null || va === undefined) return 1;
-    if (vb === null || vb === undefined) return -1;
+    // Not yet published (null) follows the sort direction: last when
+    // ascending, first when descending — never stuck at the bottom.
+    if (va === null || va === undefined) return dir > 0 ? 1 : -1;
+    if (vb === null || vb === undefined) return dir > 0 ? -1 : 1;
     if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * dir;
     return String(va).localeCompare(String(vb)) * dir;
   });
@@ -149,11 +178,14 @@ function sortedSeries(rows) {
 function renderTable() {
   const rows = sortedSeries(visibleSeries());
   $('row-count').textContent = t().showing(rows.length, SERIES.length);
+  if (rows.length === 0) {
+    $('registry-body').innerHTML = `<tr class="empty-row"><td colspan="11">${t().emptySearch(state.search)}</td></tr>`;
+    return;
+  }
   $('registry-body').innerHTML = rows.map((s) => {
     const cells = ['2021', '2022', '2023', '2024', '2025', '2026'].map((y) => {
-      const v = s.values[y];
       const hot = y === '2026' ? ' class="num hot"' : ' class="num"';
-      return `<td${hot}>${v === null || v === undefined ? '—' : formatValue(v)}</td>`;
+      return `<td${hot}>${displayValue(s, y)}</td>`;
     }).join('');
     return `<tr data-id="${s.id}" tabindex="0">`
       + `<td class="code">${s.code}</td>`
@@ -187,7 +219,8 @@ function openInspector(id) {
   const s = SERIES.find((x) => x.id === id);
   if (!s) return;
   $('insp-title').textContent = `[METHOD] ${s.code} // ${s.nameEn} (${s.nameKo})`;
-  $('insp-body').innerHTML = `<p><strong>${t().inspectorBasis}:</strong> ${s.basis2026}</p>`
+  const basis = state.lang === 'en' ? s.basis2026 : s.basis2026Ko;
+  $('insp-body').innerHTML = `<p><strong>${t().inspectorBasis}:</strong> ${basis}</p>`
     + `<p><strong>${t().inspectorMethod}:</strong> ${state.lang === 'en' ? s.methodEn : s.methodKo}</p>`
     + `<p><strong>${t().inspectorSource}:</strong> ${s.source} — <a href="${s.sourceUrl}" target="_blank" rel="noopener noreferrer">${s.sourceUrl}</a></p>`;
   $('inspector').classList.add('open');
@@ -225,8 +258,19 @@ function applyLanguage() {
   $('banner-sub').textContent = t().bannerSub;
   $('banner-source').textContent = t().bannerSource;
   $('quick-facts').textContent = t().quickFacts;
+  $('range-label').textContent = t().rangeLabel;
+  $('year-range').querySelectorAll('option').forEach((opt, i) => {
+    opt.textContent = t().rangeOptions[i];
+  });
+  $('snapshot-select').querySelectorAll('option').forEach((opt, i) => {
+    opt.textContent = t().snapshotOptions[i];
+  });
   $('chart-hint').textContent = t().chartHint;
+  $('chart-legend').textContent = t().chartLegend2026;
   $('registry-heading').textContent = `${t().registryTitle} — ${t().registryHint}`;
+  $('sources-heading').textContent = t().sourcesTitle;
+  $('sources-note').textContent = t().sourcesNote;
+  $('glossary').textContent = state.lang === 'en' ? GLOSSARY.en : GLOSSARY.ko;
   $('search-box').placeholder = t().searchPlaceholder;
   $('btn-export').textContent = t().exportLabel;
   $('btn-close-insp').textContent = t().closeLabel;
@@ -237,6 +281,7 @@ function applyLanguage() {
     if (d) btn.textContent = `[${DOMAINS.indexOf(d) + 1}] ${state.lang === 'en' ? d.labelEn : d.labelKo}`;
   });
   fillSeriesSelect();
+  renderSources();
   renderKpis();
   renderChart();
   renderSnapshot();
@@ -247,8 +292,8 @@ function applyLanguage() {
 
 function renderSources() {
   $('sources-grid').innerHTML = SOURCES.map((s, i) => `<div class="source-card">`
-    + `<strong class="amber">[0${i + 1}] ${s.nameEn} (${s.nameKo})</strong><br>`
-    + `<span class="dim">${s.covers}</span><br>`
+    + `<strong class="amber">[0${i + 1}] ${state.lang === 'en' ? s.nameEn : s.nameKo} (${s.short})</strong><br>`
+    + `<span class="dim">${state.lang === 'en' ? s.covers : s.coversKo}</span><br>`
     + `<a href="${s.url}" target="_blank" rel="noopener noreferrer">→ ${s.url}</a></div>`).join('');
 }
 

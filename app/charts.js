@@ -10,11 +10,18 @@ export function yearsForRange(range) {
   return ['2020', '2021', '2022', '2023', '2024', '2025', '2026'];
 }
 
-export function formatValue(value, unit) {
+export function formatValue(value) {
   if (value === null || value === undefined) return '—';
   if (Math.abs(value) >= 1000) return value.toLocaleString('en-US');
   if (Number.isInteger(value)) return String(value);
   return String(value);
+}
+
+// Point labels keep one decimal on percent series ("2.0", not "2"),
+// and carry the caller's 2026 mark ("est.", "proj.", "Oct") when given.
+function pointLabel(series, year, value, mark2026) {
+  const base = series.unit.includes('%') ? value.toFixed(1) : formatValue(value);
+  return year === '2026' && mark2026 ? `${base} ${mark2026}` : base;
 }
 
 function niceLabel(value) {
@@ -24,8 +31,9 @@ function niceLabel(value) {
 }
 
 // Build the chart. `onPoint` is called with { year, value, delta }
-// whenever the visitor hovers or taps a dot.
-export function renderChartSVG(container, series, years, mode, onPoint) {
+// whenever the visitor hovers or taps a dot. `mark2026` is the
+// language-appropriate mark for a 2026 point ("est.", "proj.", "Oct").
+export function renderChartSVG(container, series, years, mode, onPoint, mark2026) {
   const points = years
     .map((year) => ({ year, value: series.values[year] ?? null }))
     .filter((p) => p.value !== null);
@@ -52,7 +60,12 @@ export function renderChartSVG(container, series, years, mode, onPoint) {
   high += span * 0.15;
   if (mode === 'bar' && low > 0) low = 0;
 
-  const xAt = (i) => padL + (shown.length === 1 ? plotW / 2 : (i / (shown.length - 1)) * plotW);
+  // Bars sit in the centre of their year slot, clear of the y-axis
+  // labels (a bar centred on the first year used to overlap them);
+  // line points sit on the year itself.
+  const xAt = (i) => (mode === 'bar'
+    ? padL + ((i + 0.5) / shown.length) * plotW
+    : padL + (shown.length === 1 ? plotW / 2 : (i / (shown.length - 1)) * plotW));
   const yAt = (v) => padT + plotH - ((v - low) / (high - low)) * plotH;
 
   let grid = '';
@@ -90,7 +103,10 @@ export function renderChartSVG(container, series, years, mode, onPoint) {
       const vy = yAt(p.value);
       const top = Math.min(vy, baseY);
       const h = Math.max(2, Math.abs(baseY - vy));
-      const fill = p.value < 0 ? '#f87171' : '#38bdf8';
+      // The 2026 bar is a partial year (Q3 / Oct / Jan–Oct), never a
+      // full year: amber, so it is never read as an annual total.
+      const partial = p.year === '2026';
+      const fill = partial ? '#fbbf24' : (p.value < 0 ? '#f87171' : '#38bdf8');
       body += `<rect x="${(cx - barW / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="${fill}" fill-opacity="0.85" stroke="#d8e2ee" stroke-width="0.6" />`;
     });
   }
@@ -105,8 +121,15 @@ export function renderChartSVG(container, series, years, mode, onPoint) {
       return;
     }
     const cy = yAt(p.value);
-    nodes += `<text x="${cx.toFixed(1)}" y="${(cy - 10).toFixed(1)}" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">${formatValue(p.value)}</text>`
-      + `<circle class="chart-dot" data-year="${p.year}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5.5" fill="#070b10" stroke="#34d399" stroke-width="2.2" style="cursor:pointer" />`;
+    // Keep the label clear of the y-axis and the top edge: clamp its
+    // x inside the plot and drop it below the dot when it would
+    // otherwise sit above the chart (the 2020 "-0.7" label used to
+    // overlap the axis).
+    const lx = Math.min(Math.max(cx, padL + 20), width - padR - 20);
+    const ly = cy - 10 < padT + 2 ? cy + 18 : cy - 10;
+    const dotStroke = p.year === '2026' ? '#fbbf24' : '#34d399';
+    nodes += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">${pointLabel(series, p.year, p.value, mark2026)}</text>`
+      + `<circle class="chart-dot" data-year="${p.year}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5.5" fill="#070b10" stroke="${dotStroke}" stroke-width="2.2" style="cursor:pointer" />`;
   });
 
   container.innerHTML = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Chart of ${series.nameEn}">`

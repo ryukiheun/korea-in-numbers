@@ -8,8 +8,6 @@
 //   MODS  — Ministry of Data and Statistics (KOSIS), https://kosis.kr/eng/
 //   BOK   — Bank of Korea (ECOS), https://ecos.bok.or.kr/
 //   MOTIR — Ministry of Trade, Industry and Resources, https://english.motir.go.kr/
-//   WB    — World Bank open data, used only for the mid-year population
-//           denominator (indicator SP.POP.TOTL).
 
 export const SOURCES = [
   {
@@ -18,6 +16,7 @@ export const SOURCES = [
     nameKo: '국가데이터처',
     url: 'https://kosis.kr/eng/',
     covers: 'Population, births, consumer prices and the labour force survey.',
+    coversKo: '인구, 출생, 소비자물가, 경제활동인구조사.',
   },
   {
     short: 'BOK',
@@ -25,6 +24,7 @@ export const SOURCES = [
     nameKo: '한국은행',
     url: 'https://ecos.bok.or.kr/',
     covers: 'National accounts: real GDP growth and nominal GDP.',
+    coversKo: '국민계정: 실질 GDP 성장률과 명목 GDP.',
   },
   {
     short: 'MOTIR',
@@ -32,6 +32,7 @@ export const SOURCES = [
     nameKo: '산업통상자원부',
     url: 'https://english.motir.go.kr/',
     covers: 'Customs trade: exports, imports and the merchandise balance.',
+    coversKo: '통관 무역: 수출, 수입, 상품수지.',
   },
 ];
 
@@ -45,6 +46,7 @@ export const SERIES = [
     unit: '% YoY',
     values: { 2020: -0.7, 2021: 4.6, 2022: 2.7, 2023: 1.4, 2024: 2.0, 2025: 1.0, 2026: 3.4 },
     basis2026: 'Q3 2026, year on year (+1.0% on the quarter). BOK advance estimate, 27 Oct 2026. The Bank’s August 2026 full-year forecast was 3.3%.',
+    basis2026Ko: '2026년 3분기 전년동기비(+1.0% 전기비). 한국은행 속보치(2026.10.27). 한은의 2026년 8월 연간 전망은 3.3%.',
     source: 'BOK',
     sourceUrl: 'https://ecos.bok.or.kr/',
     methodEn: 'Chain-linked volume GDP, reference year 2020, seasonally adjusted quarterly and annual national accounts.',
@@ -59,6 +61,7 @@ export const SERIES = [
     unit: '% YoY',
     values: { 2020: 0.5, 2021: 2.5, 2022: 5.1, 2023: 3.6, 2024: 2.3, 2025: 2.1, 2026: 2.8 },
     basis2026: 'October 2026, year on year (September 2026 was 2.9%; month on month +0.2%). Annual columns are yearly averages.',
+    basis2026Ko: '2026년 10월 전년동월비(9월 2.9%, 전월비 +0.2%). 연간 열은 연평균.',
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Laspeyres index over 458 representative household goods and services, base year 2020 = 100.',
@@ -73,6 +76,8 @@ export const SERIES = [
     unit: '2020 = 100',
     values: { 2020: 100.0, 2021: 102.5, 2022: 107.72, 2023: 111.59, 2024: 114.18, 2025: 116.61, 2026: 120.73 },
     basis2026: 'October 2026 level (120.73). Annual columns are yearly averages, built up from the annual inflation rates.',
+    basis2026Ko: '2026년 10월 수준(120.73). 연간 열은 연평균.',
+    mark2026: { en: 'Oct', ko: '10월' },
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Monthly price survey in 40 cities; expenditure weights revised every five years.',
@@ -87,6 +92,7 @@ export const SERIES = [
     unit: '%',
     values: { 2020: 4.0, 2021: 3.7, 2022: 2.9, 2023: 2.7, 2024: 2.8, 2025: 2.7, 2026: 2.5 },
     basis2026: 'October 2026, seasonally adjusted (September 2.6%). The non-seasonally-adjusted rate in October 2026 was 2.0%. Annual columns are yearly averages.',
+    basis2026Ko: '2026년 10월 계절조정(9월 2.6%). 원계열 실업률은 2.0%. 연간 열은 연평균.',
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Economically Active Population Survey, ages 15 and over, ILO four-week active job-search rule.',
@@ -101,6 +107,7 @@ export const SERIES = [
     unit: 'thousand',
     values: { 2020: 26904, 2021: 27273, 2022: 28089, 2023: 28416, 2024: 28576, 2025: 28769, 2026: 29179 },
     basis2026: 'October 2026: 29.179 million, up 139,000 on a year earlier. Employment rate 63.3% (ages 15+); 70.4% for ages 15–64; 42.9% for ages 15–29.',
+    basis2026Ko: '2026년 10월 취업자 2,917.9만 명, 전년보다 13.9만 명 증가. 고용률 63.3%(15세 이상), 15–64세 70.4%, 15–29세 42.9%.',
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Monthly survey of about 36,000 households, reference week containing the 15th of the month.',
@@ -115,6 +122,8 @@ export const SERIES = [
     unit: 'thousand',
     values: { 2020: 51836, 2021: 51770, 2022: 51673, 2023: 51713, 2024: 51751, 2025: 51685, 2026: 51609 },
     basis2026: 'Median projection for 2026, 51.61 million (MODS Future Population Projections 2022–2072). Earlier columns are mid-year resident population.',
+    basis2026Ko: '2026년 중위 추계 5,161만 명(국가데이터처 장래인구추계 2022–2072). 이전 열은 연앙 상주인구.',
+    mark2026: { en: 'proj.', ko: '추계' },
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Cohort-component projection anchored on the Population and Housing Census; mid-year de facto population.',
@@ -129,6 +138,8 @@ export const SERIES = [
     unit: 'births / woman',
     values: { 2020: 0.837, 2021: 0.808, 2022: 0.778, 2023: 0.721, 2024: 0.748, 2025: 0.799, 2026: 0.82 },
     basis2026: 'ESTIMATE — year-to-date trend around 0.82, not a published annual figure. Confirmed 2025: 0.799, with 254,341 live births (+6.7% on 2024).',
+    basis2026Ko: '추정치 — 연중 추세 약 0.82, 공표된 연간 수치가 아님. 확정 2025년 0.799, 출생아 254,341명(전년보다 +6.7%).',
+    mark2026: { en: 'est.', ko: '추정치' },
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Sum of age-specific fertility rates for women aged 15–49, from civil birth registrations. MODS Birth Statistics in 2025, 26 Aug 2026.',
@@ -143,6 +154,7 @@ export const SERIES = [
     unit: 'persons',
     values: { 2020: 272337, 2021: 260562, 2022: 249186, 2023: 230028, 2024: 238317, 2025: 254341, 2026: null },
     basis2026: 'Not yet published — the 2026 annual total comes out with the 2026 birth statistics. 2025: 254,341 births, up 16,024 (+6.7%) on 2024.',
+    basis2026Ko: '아직 미발표 — 2026년 연간 합계는 2026년 출생통계와 함께 나온다. 2025년 출생아 254,341명, 전년보다 16,024명(+6.7%) 증가.',
     source: 'MODS',
     sourceUrl: 'https://kosis.kr/eng/',
     methodEn: 'Count of live births from civil registrations. Deaths in 2025 were 362,968, so the natural change was −108,627; marriages 240,326.',
@@ -157,6 +169,7 @@ export const SERIES = [
     unit: 'USD billion',
     values: { 2020: 512.5, 2021: 644.4, 2022: 683.6, 2023: 632.2, 2024: 683.6, 2025: 709.3, 2026: 930.0 },
     basis2026: 'January–October 2026 cumulative, $930.0B — the first time the ten-month total passed $900B. October alone was a record $115.28B (+93.7% YoY). Semiconductors Jan–Oct: $396.8B, 42.7% of exports.',
+    basis2026Ko: '2026년 1–10월 누적 9,300억 달러 — 10개월 누계가 9,000억 달러를 처음 넘김. 10월 한 달 1,152.8억 달러로 역대 최대(+93.7% 전년동월비). 반도체 1–10월 3,968억 달러, 수출의 42.7%.',
     source: 'MOTIR',
     sourceUrl: 'https://english.motir.go.kr/',
     methodEn: 'Customs-cleared merchandise exports, free on board (FOB), in nominal US dollars. MOTIR press release, 1 Nov 2026.',
@@ -171,6 +184,7 @@ export const SERIES = [
     unit: 'USD billion',
     values: { 2020: 44.9, 2021: 29.3, 2022: -47.8, 2023: -10.3, 2024: 51.8, 2025: 77.4, 2026: 294.9 },
     basis2026: 'January–October 2026 cumulative surplus, $294.9B; October alone +$42.5B. Far above any previous full-year customs surplus.',
+    basis2026Ko: '2026년 1–10월 누적 흑자 2,949억 달러, 10월 한 달 +425억 달러. 종전 연간 최대 흑자를 크게 웃돎.',
     source: 'MOTIR',
     sourceUrl: 'https://english.motir.go.kr/',
     methodEn: 'Merchandise exports (FOB) minus merchandise imports (CIF), customs clearance basis.',
@@ -221,13 +235,15 @@ export const HEADLINE_KPIS = [
   },
 ];
 
-// Structural snapshots: each row is drawn as an ASCII bar. Every row
-// states its own scale, so a 2.5% unemployment bar and a 63.3%
-// employment bar are never silently compared on one axis.
+// Structural snapshots: prices and labour rows are drawn as ASCII
+// bars on one stated scale each (0–15% / 0–100%). The vital view
+// mixes units, so it lists values with no bars and no common scale.
 export const SNAPSHOTS = {
   prices: {
     titleEn: 'WHAT DROVE PRICES · OCT 2026, % YoY',
     titleKo: '물가를 움직인 요인 · 2026년 10월, 전년동월비',
+    scaleEn: 'scale 0–15%',
+    scaleKo: '축 0–15%',
     rows: [
       { labelEn: 'Petroleum products', labelKo: '석유류', value: 14.9, max: 15, unit: '%' },
       { labelEn: 'Headline CPI', labelKo: '소비자물가 전체', value: 2.8, max: 15, unit: '%' },
@@ -241,6 +257,8 @@ export const SNAPSHOTS = {
   labour: {
     titleEn: 'WHO IS WORKING · OCT 2026',
     titleKo: '일하는 사람 · 2026년 10월',
+    scaleEn: 'scale 0–100%',
+    scaleKo: '축 0–100%',
     rows: [
       { labelEn: 'Employment rate, ages 15–64', labelKo: '고용률 15–64세', value: 70.4, max: 100, unit: '%' },
       { labelEn: 'Employment rate, ages 15+', labelKo: '고용률 15세 이상', value: 63.3, max: 100, unit: '%' },
@@ -254,9 +272,14 @@ export const SNAPSHOTS = {
   vital: {
     titleEn: 'BIRTHS, DEATHS & PEOPLE · 2025–26',
     titleKo: '출생·사망·인구 · 2025–26년',
+    // Different units on every row (births per woman, per 1,000,
+    // thousand, million), so no bars: values only, never compared.
+    bars: false,
+    scaleEn: 'values listed — no common scale',
+    scaleKo: '값만 나열 — 공통 축 없음',
     rows: [
       { labelEn: 'Total fertility rate, 2025', labelKo: '합계출산율 2025년', value: 0.799, max: 2.1, unit: '' },
-      { labelEn: 'Crude birth rate, per 1,000', labelKo: '조출생률(인구 1,000명당)', value: 5.0, max: 15, unit: '' },
+      { labelEn: 'Crude birth rate, per 1,000', labelKo: '조출생률(인구 1,000명당)', value: 4.9, max: 15, unit: '' },
       { labelEn: 'Crude death rate, per 1,000 *', labelKo: '조사망률(인구 1,000명당) *', value: 7.0, max: 15, unit: '' },
       { labelEn: 'Marriages, 2025 (thousand)', labelKo: '혼인 건수 2025년(천 건)', value: 240.3, max: 300, unit: 'k' },
       { labelEn: 'Population, 2026 proj. (million)', labelKo: '인구 2026년 추계(백만 명)', value: 51.61, max: 52, unit: 'M' },
@@ -275,17 +298,30 @@ export const DOMAINS = [
   { id: 'trade', labelEn: 'TRADE', labelKo: '무역' },
 ];
 
+export const GLOSSARY = {
+  en: 'SA = seasonally adjusted · NSA = not seasonally adjusted · YoY = year on year · QoQ = quarter on quarter · FOB = free on board · CIF = cost, insurance and freight · MODS = Ministry of Data and Statistics · BOK = Bank of Korea · MOTIR = Ministry of Trade, Industry and Resources.',
+  ko: '계절조정 = 계절 요인 제거 · 원계열 = 계절조정 전 · 전년동기비 = 1년 전 같은 기간과 비교 · 전기비 = 직전 분기와 비교 · FOB = 본선인도가격 · CIF = 운임·보험료 포함 가격 · 국가데이터처 = MODS · 한국은행 = BOK · 산업통상자원부 = MOTIR.',
+};
+
 export const UI_TEXT = {
   en: {
     bannerKicker: '19 NOV 2026 · FIRST TIME EVER',
     bannerHead: 'Korea’s cumulative exports passed $1 trillion.',
-    bannerSub: 'October 2026 alone set a record: $115.28B exported, up 93.7% on a year earlier, led by semiconductors at $56.4B in the month. Jan–Oct exports: $930.0B. Trade surplus Jan–Oct: $294.9B.',
-    bannerSource: 'Source: MOTIR, 1 Nov 2026',
-    quickFacts: 'Nominal GDP 2025 ≈ $1,936.6B · GDP per capita 2025 $37,470 (BOK) · Core CPI Oct 2026 +2.8% (MODS)',
+    bannerSub: 'Cumulative exports, 1 Jan–19 Nov 2026, passed $1 trillion for the first time — up from $930.0B at the end of October. October alone set a record: $115.28B exported, up 93.7% on a year earlier, led by semiconductors at $56.4B in the month. Trade surplus Jan–Oct: $294.9B.',
+    bannerSource: 'Source: MOTIR, 19 Nov 2026',
+    quickFacts: 'Exports Jan–Oct 2026 $930.0B · Trade surplus Jan–Oct +$294.9B (MOTIR) · Core CPI Oct 2026 +2.8% (MODS)',
+    rangeLabel: 'CHART RANGE:',
+    rangeOptions: ['2020 – 2026 (FULL)', '2023 – 2026 (RECENT)', '2024 – 2026 (LATEST)'],
+    snapshotOptions: ['PRICES · OCT 2026 YoY', 'LABOUR · OCT 2026', 'BIRTHS & PEOPLE · 2025–26'],
     chartHint: 'Hover or tap a point for the exact reading.',
+    chartLegend2026: '* 2026: latest release per series (Q3 / Oct / Jan–Oct), not a full year. In bar mode the 2026 bar is amber.',
+    emptySearch: (q) => `No series match “${q}” — try another keyword.`,
+    plotHint: 'plot →',
     snapshotTitle: 'STRUCTURAL SNAPSHOT',
     registryTitle: 'OFFICIAL STATISTICAL REGISTRY',
     registryHint: 'Click a column to sort · click a row for method & source',
+    sourcesTitle: 'PRIMARY OFFICIAL SOURCES & RELEASE NOTES',
+    sourcesNote: 'Every figure on this page names its source and its year in the registry. The 2026 column mixes the latest release per series — a Q3 growth rate, an October price level, a January–October trade total — and each row’s inspector says which. Nothing here is fetched at run time: all figures ship in the site’s own files.',
     searchPlaceholder: '/ filter series…',
     exportLabel: '[EXPORT .CSV]',
     langLabel: '[LANG: EN]',
@@ -300,13 +336,21 @@ export const UI_TEXT = {
   ko: {
     bannerKicker: '2026년 11월 19일 · 사상 처음',
     bannerHead: '한국 누적 수출액 1조 달러 돌파.',
-    bannerSub: '2026년 10월 한 달 수출은 1,152.8억 달러로 역대 최대, 전년보다 93.7% 증가. 반도체 한 달 수출 564억 달러. 1–10월 수출 9,300억 달러, 무역수지 흑자 2,949억 달러.',
-    bannerSource: '출처: 산업통상자원부, 2026.11.1',
-    quickFacts: '명목 GDP 2025년 약 1조 9,366억 달러 · 1인당 GDP 37,470달러(한국은행) · 근원물가 2026년 10월 +2.8%(국가데이터처)',
+    bannerSub: '2026년 1월 1일~11월 19일 누적 수출이 사상 처음 1조 달러를 넘었다. 10월 말 기준 9,300억 달러에서 출발했다. 10월 한 달 수출은 1,152.8억 달러로 역대 최대, 전년보다 93.7% 증가. 반도체 한 달 수출 564억 달러. 1–10월 무역수지 흑자 2,949억 달러.',
+    bannerSource: '출처: 산업통상자원부, 2026.11.19',
+    quickFacts: '수출 2026년 1–10월 9,300억 달러 · 무역수지 1–10월 +2,949억 달러(산업부) · 근원물가 2026년 10월 +2.8%(국가데이터처)',
+    rangeLabel: '차트 기간:',
+    rangeOptions: ['2020–2026년 (전체)', '2023–2026년 (최근)', '2024–2026년 (최신)'],
+    snapshotOptions: ['물가 · 2026년 10월 전년동월비', '고용 · 2026년 10월', '출생·인구 · 2025–26년'],
     chartHint: '점을 누르면 정확한 수치가 나옵니다.',
+    chartLegend2026: '* 2026년: 지표별 최신 발표 기준(Q3 / 10월 / 1–10월), 연간 수치가 아닙니다. 막대 차트에서 2026년 막대는 주황색입니다.',
+    emptySearch: (q) => `“${q}”와 맞는 지표가 없습니다 — 다른 단어를 입력해 보세요.`,
+    plotHint: '차트 →',
     snapshotTitle: '구조 스냅샷',
     registryTitle: '공식 통계 등록부',
     registryHint: '열을 누르면 정렬 · 행을 누르면 산출 방법과 출처',
+    sourcesTitle: '주요 공식 출처와 공표 안내',
+    sourcesNote: '이 페이지의 모든 수치는 등록부에서 출처와 연도를 밝힙니다. 2026년 열은 지표별 최신 발표를 섞어 놓은 것입니다 — 3분기 성장률, 10월 물가지수, 1–10월 무역 총액 — 기준은 각 행의 설명을 보세요. 실행 중에 가져오는 수치는 없습니다. 모든 수치는 이 사이트 파일 안에 들어 있습니다.',
     searchPlaceholder: '/ 지표 검색…',
     exportLabel: '[CSV 내보내기]',
     langLabel: '[LANG: KO]',
